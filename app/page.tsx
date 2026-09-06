@@ -1,5 +1,5 @@
 'use client';
-import { cmaRequirements } from '@/data/cma-baseline';
+import { cmaRequirements } from '../data/cma-baseline';
 
 const cards = [
   ['Overall Readiness','Baseline Building','Proposal intelligence'],
