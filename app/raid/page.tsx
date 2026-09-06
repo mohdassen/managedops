@@ -1,3 +1,4 @@
+'use client';
 const items=[
  {type:'Risk',title:'Privileged access not yet evidenced',impact:'Could block operational takeover',status:'Open'},
  {type:'Risk',title:'KT completion not yet evidenced',impact:'Critical knowledge gap at go-live',status:'Open'},
