@@ -8,12 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: development
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm install --include=dev
+      - run: npm install
+      - run: npm install --no-save typescript @types/node @types/react @types/react-dom
       - run: npm run build
