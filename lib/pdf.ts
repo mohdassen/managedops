@@ -2,7 +2,7 @@ export type PdfPage = { page: number; text: string };
 
 export async function extractPdfPages(buffer: ArrayBuffer): Promise<PdfPage[]> {
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
-  const loadingTask = pdfjs.getDocument({ data: new Uint8Array(buffer), disableWorker: true });
+  const loadingTask = pdfjs.getDocument({ data: new Uint8Array(buffer) });
   const pdf = await loadingTask.promise;
   const pages: PdfPage[] = [];
 
