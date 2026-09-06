@@ -1,3 +1,4 @@
+'use client';
 const gates=[
  {name:'Handover plan',status:'Required',source:'TP-CMA · transition activities'},
  {name:'RACI matrix',status:'Required',source:'TP-CMA · transition activities'},
