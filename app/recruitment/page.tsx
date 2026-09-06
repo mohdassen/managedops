@@ -1,3 +1,4 @@
+'use client';
 const positions=[
  {role:'Service Delivery Manager',required:1,status:'Open',source:'TP-CMA · p92'},
  {role:'Operation & Infrastructure Lead',required:1,status:'Shortlist ready',source:'TP-CMA · p92'}
