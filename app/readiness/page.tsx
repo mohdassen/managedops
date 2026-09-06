@@ -1,3 +1,4 @@
+'use client';
 const factors=[
  ['People','Partial','Critical'],['Access','Unknown','Critical'],['Documentation','Partial','Standard'],['Knowledge Transfer','Unknown','Critical'],['Monitoring','Partial','Standard'],['SOP / Runbooks','Unknown','Standard'],['SLA / OLA','Partial','Critical'],['Backup / DR','Unknown','Critical']
 ];
