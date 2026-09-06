@@ -1,11 +1,8 @@
-import { cmaRequirements, cmaBaselineSummary } from '@/data/cma-baseline';
-
-const labels: Record<string,string> = {scope:'Scope',service:'Service',resource:'Resource',role:'Role',sla_kpi:'SLA / KPI',deliverable:'Deliverable',milestone:'Milestone',transition:'Transition',kt:'Knowledge Transfer',governance:'Governance',coverage:'Coverage',responsibility:'Responsibility',dependency:'Dependency',assumption:'Assumption',risk:'Risk'};
+import { cmaRequirements, cmaBaselineSummary } from '../../data/cma-baseline';
+import ReviewClient from './ReviewClient';
 
 export default function ReviewPage(){return <main>
   <a className="eyebrow" href="/">← CONTROL CENTER</a>
-  <section className="panel"><p className="eyebrow">AI EXTRACTION REVIEW</p><h1>{cmaBaselineSummary.name}</h1><p>Source of truth for this MVP: <b>Winning Technical Proposal</b>. Every extracted item remains reviewable until a human approves it.</p>
-  <div className="grid"><article><small>Extracted</small><strong>{cmaBaselineSummary.extracted}</strong><span>Seed baseline items</span></article><article><small>Approved</small><strong>{cmaBaselineSummary.approved}</strong><span>Human approved</span></article><article><small>Need review</small><strong>{cmaBaselineSummary.needsReview}</strong><span>Pending decision</span></article></div></section>
-  <section className="panel"><h3>Extracted requirements</h3><div className="table">{cmaRequirements.map(r=><div className="row" key={r.id}><div><span className="tag">{labels[r.category]}</span><h4>{r.title}</h4><p>{r.detail}</p></div><div className="source"><b>{Math.round(r.confidence*100)}%</b><span>confidence</span><small>{r.source.document}<br/>Page {r.source.page}<br/>{r.source.section}</small></div></div>)}</div></section>
-  <style jsx>{`.table{display:grid;gap:12px}.row{display:grid;grid-template-columns:1fr 180px;gap:18px;background:#091522;border:1px solid #1b3047;border-radius:14px;padding:18px}.row h4{margin:8px 0 4px}.row p{margin:0}.tag{font-size:11px;border:1px solid #31506d;border-radius:20px;padding:4px 8px;color:#63d5c4}.source{display:flex;flex-direction:column;gap:3px;border-left:1px solid #1b3047;padding-left:16px}.source b{font-size:22px}.source span,.source small{color:#8195ad}@media(max-width:760px){.row{grid-template-columns:1fr}.source{border-left:0;border-top:1px solid #1b3047;padding:12px 0 0}}`}</style>
+  <section className="panel"><p className="eyebrow">AI EXTRACTION REVIEW</p><h1>{cmaBaselineSummary.name}</h1><p>Source of truth for this MVP: <b>Winning Technical Proposal</b>. Every extracted item remains reviewable until a human approves it.</p></section>
+  <ReviewClient initial={cmaRequirements}/>
 </main>}
