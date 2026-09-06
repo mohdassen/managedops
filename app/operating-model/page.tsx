@@ -1,3 +1,4 @@
+'use client';
 const governance=[
  ['Steering Committee','Strategic approvals, resource allocation, blockers'],
  ['Service Delivery Management','Overall managed-services coordination and reporting'],
