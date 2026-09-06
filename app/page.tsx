@@ -1,3 +1,4 @@
+'use client';
 import { cmaRequirements } from '@/data/cma-baseline';
 
 const cards = [
@@ -13,7 +14,7 @@ export default function Home(){return <main>
   <header><div><p className="eyebrow">CMA MANAGED SERVICES</p><h1>ManagedOps Control Center</h1><p>Managed Services Readiness Intelligence</p></div><span className="badge">MVP · CMA</span></header>
   <section className="hero"><div><p className="eyebrow">PRIMARY QUESTION</p><h2>Are we ready to take over this service safely?</h2><p>The CMA winning proposal is now seeded as the current source of truth. Every extracted requirement remains traceable and requires review before approval.</p></div><div className="actions"><a href="/review">Review AI Extraction →</a><a className="secondary" href="/ingest">Add Documents</a></div></section>
   <section className="grid">{cards.map(([a,b,c])=><article key={a}><small>{a}</small><strong>{b}</strong><span>{c}</span></article>)}</section>
-  <section className="panel"><h3>Workspaces</h3><div className="quick"><a href="/review">Proposal Intelligence</a><a href="/recruitment">Resource & Recruitment</a><a href="/transition">Transition & KT</a></div></section>
+  <section className="panel"><h3>Workspaces</h3><div className="quick"><a href="/review">Proposal Intelligence</a><a href="/recruitment">Resource & Recruitment</a><a href="/transition">Transition & KT</a><a href="/operating-model">Operating Model</a><a href="/raid">RAID</a><a href="/readiness">Service Readiness</a></div></section>
   <section className="panel"><h3>Delivery flow</h3><div className="flow">{modules.map((m,i)=><div key={m}><b>{i+1}</b><span>{m}</span></div>)}</div></section>
   <section className="panel"><h3>Current CMA source</h3><p><b>TP-CMA(1).pdf</b> · Winning Technical Proposal · Proposal commitments are not treated as contractual obligations until a contract is added and reviewed.</p></section>
   <section className="panel"><h3>AI review policy</h3><p>Upload / Connect → AI Extract → Review Changes → Approve → Dashboard. AI never silently converts proposal language into contractual facts. Missing data stays <b>To Be Confirmed</b>.</p></section>
