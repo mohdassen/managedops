@@ -1,18 +1,22 @@
 'use client';
-const gates=[
- {name:'Handover plan',status:'Required',source:'TP-CMA · transition activities'},
- {name:'RACI matrix',status:'Required',source:'TP-CMA · transition activities'},
- {name:'SLA/KPI monitoring mechanism',status:'Required',source:'TP-CMA · transition activities'},
- {name:'Knowledge transfer plan',status:'Required',source:'TP-CMA · KT commitment'},
- {name:'Team readiness',status:'Partial',source:'Proposal resource plan'},
- {name:'Privileged access',status:'Unknown',source:'Evidence not available'},
- {name:'Operational documentation',status:'Partial',source:'Proposal commitment only'},
- {name:'Backup / DR evidence',status:'Unknown',source:'Evidence not available'}
-];
-export default function Transition(){return <main>
-<a className="eyebrow" href="/">← CONTROL CENTER</a>
-<section className="panel"><p className="eyebrow">TRANSITION & KNOWLEDGE TRANSFER</p><h1>Go-Live Evidence Gates</h1><p>Proposal commitments define what must exist. Readiness stays unproven until evidence is attached and reviewed.</p></section>
-<section className="panel"><div className="table">{gates.map(g=><div className="row" key={g.name}><div><h4>{g.name}</h4><small>{g.source}</small></div><span className={`status ${g.status.toLowerCase()}`}>{g.status}</span></div>)}</div></section>
-<section className="panel"><h3>Current assessment</h3><p><b>INSUFFICIENT EVIDENCE</b> — we have proposal requirements, but not enough operational evidence yet to issue a defensible Go / Conditional Go / No-Go decision.</p></section>
-<style jsx>{`.table{display:grid;gap:10px}.row{display:flex;justify-content:space-between;align-items:center;padding:16px;background:#091522;border:1px solid #1b3047;border-radius:12px}.row h4{margin:0 0 5px}.row small{color:#8195ad}.status{border:1px solid #31506d;border-radius:20px;padding:6px 10px;font-size:12px}.partial{color:#ffd27d}.unknown{color:#9fb0c8}.required{color:#63d5c4}`}</style>
-</main>}
+import { useEffect, useState } from 'react';
+
+type Evidence={id:string;title:string;detail:string;reviewState:string;sourceDocument:string;sourcePage:number|null;sourceSection:string|null};
+type Gate={id:string;label:string;factor:string;critical:boolean;status:string;evidenceIds:string[];evidence:Evidence[]};
+
+export default function Transition(){
+ const [gates,setGates]=useState<Gate[]>([]); const [loading,setLoading]=useState(true); const [error,setError]=useState(''); const [saving,setSaving]=useState('');
+ async function load(){setLoading(true);setError('');try{const r=await fetch('/api/transition',{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load transition data');setGates(d.gates||[]);}catch(e){setError(e instanceof Error?e.message:'Unable to load transition data')}finally{setLoading(false)}}
+ useEffect(()=>{load()},[]);
+ async function update(gateId:string,status:string,evidenceId?:string){setSaving(gateId);setError('');try{const r=await fetch('/api/transition',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({gateId,status,evidenceId})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Update failed');await load();}catch(e){setError(e instanceof Error?e.message:'Update failed')}finally{setSaving('')}}
+ const ready=gates.filter(g=>g.status==='ready').length; const blocked=gates.filter(g=>g.status==='blocked').length; const unknown=gates.filter(g=>g.status==='unknown').length;
+ return <main>
+ <a className="eyebrow" href="/">← CONTROL CENTER</a>
+ <section className="panel"><p className="eyebrow">TRANSITION & KNOWLEDGE TRANSFER</p><h1>Go-Live Evidence Gates</h1><p>Proposal commitments define the required gates. Status only changes through an explicit human review action; AI-extracted requirements remain evidence, not approval.</p></section>
+ <section className="panel"><div className="summary"><div><b>{ready}</b><span>Ready</span></div><div><b>{blocked}</b><span>Blocked</span></div><div><b>{unknown}</b><span>Unknown</span></div><div><b>{gates.length}</b><span>Total gates</span></div></div></section>
+ {error&&<section className="panel"><p className="error">{error}</p></section>}
+ <section className="panel">{loading?<p>Loading transition evidence…</p>:<div className="table">{gates.map(g=><div className="gate" key={g.id}><div className="gateHead"><div><h3>{g.label}{g.critical?' · Critical':''}</h3><p>Factor: {g.factor}</p></div><span className={`status ${g.status}`}>{g.status.replace('_',' ').toUpperCase()}</span></div><div className="evidence">{g.evidence.length?g.evidence.map(e=><div className="evidenceItem" key={e.id}><div><b>{e.title}</b><small>{e.sourceDocument}{e.sourcePage?` · Page ${e.sourcePage}`:''}{e.sourceSection?` · ${e.sourceSection}`:''}</small><p>{e.detail}</p></div><button disabled={saving===g.id} onClick={()=>update(g.id,g.status==='ready'?'partial':'ready',e.id)}>{g.status==='ready'?'Mark Partial':'Approve Evidence'}</button></div>):<p className="muted">No source evidence is available yet. Keep this gate Unknown until operational evidence is provided.</p>}</div><div className="actions"><button disabled={saving===g.id} onClick={()=>update(g.id,'ready')}>Mark Ready</button><button disabled={saving===g.id} onClick={()=>update(g.id,'partial')}>Partial</button><button disabled={saving===g.id} onClick={()=>update(g.id,'blocked')}>Blocked</button><button disabled={saving===g.id} onClick={()=>update(g.id,'unknown')}>Reset Unknown</button></div></div>)}</div>}</section>
+ <section className="panel"><h3>Decision guardrail</h3><p><b>No AI auto-approval.</b> Proposal requirements can justify why a gate exists, but only reviewed operational evidence can justify Ready. Missing evidence remains Unknown.</p></section>
+ <style jsx>{`.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.summary div,.gate{background:#091522;border:1px solid #1b3047;border-radius:12px;padding:16px}.summary b{font-size:26px;display:block}.summary span,.muted{color:#8195ad}.table{display:grid;gap:14px}.gateHead,.evidenceItem,.actions{display:flex;justify-content:space-between;gap:12px;align-items:center}.gateHead h3{margin:0}.gateHead p{margin:5px 0;color:#8195ad}.status{border:1px solid #31506d;border-radius:20px;padding:6px 10px;font-size:12px}.ready{color:#63d5c4}.partial{color:#ffd27d}.blocked{color:#ff8d8d}.unknown{color:#9fb0c8}.evidence{display:grid;gap:8px;margin:14px 0}.evidenceItem{padding:12px;background:#07111f;border-radius:10px}.evidenceItem small{display:block;color:#8195ad;margin-top:4px}.evidenceItem p{margin:6px 0 0;color:#b6c4d4}.actions{justify-content:flex-start;flex-wrap:wrap}button{padding:9px 12px;border:1px solid #31506d;border-radius:9px;background:#0d2032;color:white;cursor:pointer}button:disabled{opacity:.5}.error{color:#ff8d8d}@media(max-width:700px){.summary{grid-template-columns:repeat(2,1fr)}.evidenceItem,.gateHead{align-items:flex-start;flex-direction:column}}`}</style>
+ </main>
+}
